@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">永遠の17歳</string>
+  <string name="format_years">%d 年</string>
+  <string name="format_days">%d 日</string>
 </resources>
