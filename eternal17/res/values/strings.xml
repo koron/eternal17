@@ -3,4 +3,5 @@
   <string name="app_name">Eternal 17</string>
   <string name="format_years">%d years</string>
   <string name="format_days">%d days</string>
+  <string name="reset_birthday">RESET</string>
 </resources>

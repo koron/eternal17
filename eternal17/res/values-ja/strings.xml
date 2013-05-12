@@ -3,4 +3,5 @@
   <string name="app_name">永遠の17歳</string>
   <string name="format_years">%d 歳</string>
   <string name="format_days">%d 日</string>
+  <string name="reset_birthday">リセット</string>
 </resources>

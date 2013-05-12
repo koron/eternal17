@@ -4,13 +4,17 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import android.util.Log;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.os.Bundle;
 import android.content.SharedPreferences;
-import android.widget.TextView;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 public class MainActivity extends Activity
 {
@@ -36,6 +40,29 @@ public class MainActivity extends Activity
         } else {
             chooseBirthDay();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.reset_birthday:
+                setAge(null);
+                setBirthDay(null);
+                chooseBirthDay();
+                return true;
+        }
+        return false;
     }
 
     private void setAge(Age age)
@@ -80,20 +107,37 @@ public class MainActivity extends Activity
     {
         SharedPreferences.Editor edit =
             getSharedPreferences(PREF_SETTINGS, MODE_PRIVATE).edit();
-        edit.putLong(BIRTH_DAY, date.getTime());
+        if (date != null) {
+            edit.putLong(BIRTH_DAY, date.getTime());
+        } else {
+            edit.remove(BIRTH_DAY);
+        }
         edit.commit();
     }
 
     private void applyBirthDay(Date date)
     {
+        if (date == null) {
+            date = getBirthDay();
+            if (date == null) {
+                Log.v(TAG, "no birthDay");
+                finish();
+                return;
+            }
+        }
         setBirthDay(date);
         setAge(calcAge(date));
+    }
+
+    static class ChooseState {
+        Date birthDay = null;
     }
 
     private void chooseBirthDay()
     {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.YEAR, -17);
+        final ChooseState state = new ChooseState();
         DatePickerDialog d = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -103,13 +147,26 @@ public class MainActivity extends Activity
                         int monthOfYear,
                         int dayOfMonth)
                     {
-                        applyBirthDay(new GregorianCalendar(year,
-                                monthOfYear, dayOfMonth).getTime());
+                        state.birthDay = new GregorianCalendar(year,
+                            monthOfYear, dayOfMonth).getTime();
                     }
                 },
                 c.get(Calendar.YEAR),
                 c.get(Calendar.MONTH),
-                c.get(Calendar.DAY_OF_MONTH));
+                c.get(Calendar.DAY_OF_MONTH))
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                super.onClick(dialog, which);
+                applyBirthDay(state.birthDay);
+            }
+        };
+        d.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                applyBirthDay(null);
+            }
+        });
+        d.setCancelable(true);
         d.show();
     }
 }
