@@ -4,19 +4,28 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:gravity="center_vertical"
   >
 
+<LinearLayout
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  >
 <TextView
   android:id="@+id/text_years"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:textSize="36dip"
+  android:textSize="108dip"
+  android:gravity="center_horizontal"
   />
 <TextView
   android:id="@+id/text_days"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:textSize="36dip"
+  android:textSize="48dip"
+  android:gravity="center_horizontal"
   />
+</LinearLayout>
 
 </LinearLayout>
